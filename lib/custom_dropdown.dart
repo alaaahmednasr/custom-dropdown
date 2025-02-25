@@ -176,6 +176,8 @@ class CustomDropdown<T> extends StatefulWidget {
   /// You have to explicitly check for [overlayController] visibility states using [overlayController.isShowing] property.
   final Function(bool)? visibility;
 
+  final void Function(String)? onSearch;
+
   final _SearchType? _searchType;
 
   final _DropdownType _dropdownType;
@@ -192,6 +194,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.validator,
     this.validateOnChange = true,
     this.visibility,
+    this.onSearch,
     this.overlayController,
     this.listItemBuilder,
     this.headerBuilder,
@@ -246,6 +249,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hintText,
     this.decoration,
     this.visibility,
+    this.onSearch,
     this.overlayController,
     this.searchHintText,
     this.noResultFoundText,
@@ -304,6 +308,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hintText,
     this.decoration,
     this.visibility,
+    this.onSearch,
     this.overlayController,
     this.searchHintText,
     this.noResultFoundText,
@@ -349,6 +354,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.itemsScrollController,
     this.listValidator,
     this.visibility,
+    this.onSearch,
     this.headerListBuilder,
     this.hintText,
     this.decoration,
@@ -404,6 +410,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.initialItems,
     this.controller,
     this.visibility,
+    this.onSearch,
     this.itemsScrollController,
     this.overlayController,
     this.listValidator,
@@ -466,6 +473,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.itemsScrollController,
     this.overlayController,
     this.visibility,
+    this.onSearch,
     this.hintText,
     this.decoration,
     this.searchHintText,
@@ -623,6 +631,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
               visibility: widget.visibility,
               overlay: (size, hideCallback) {
                 return _DropdownOverlay<T>(
+                  onSearch: widget.onSearch,
                   onItemSelect: (T value) {
                     switch (widget._dropdownType) {
                       case _DropdownType.singleSelect:

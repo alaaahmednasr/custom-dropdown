@@ -9,11 +9,13 @@ class _SearchField<T> extends StatefulWidget {
   final Duration? futureRequestDelay;
   final ValueChanged<bool>? onFutureRequestLoading, mayFoundResult;
   final SearchFieldDecoration? decoration;
+  final void Function(String)? onSearch;
 
   const _SearchField.forListData({
     super.key,
     required this.items,
     required this.onSearchedItems,
+    required this.onSearch,
     required this.searchHintText,
     required this.decoration,
   })  : searchType = _SearchType.onListData,
@@ -25,6 +27,7 @@ class _SearchField<T> extends StatefulWidget {
   const _SearchField.forRequestData({
     super.key,
     required this.items,
+    required this.onSearch,
     required this.onSearchedItems,
     required this.searchHintText,
     required this.futureRequest,
@@ -60,18 +63,18 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
     super.dispose();
   }
 
-  void onSearch(String query) {
-    final result = widget.items.where(
-      (item) {
-        if (item is CustomDropdownListFilter) {
-          return item.filter(query);
-        } else {
-          return item.toString().toLowerCase().contains(query.toLowerCase());
-        }
-      },
-    ).toList();
-    widget.onSearchedItems(result);
-  }
+  // void onSearch(String query) {
+  //   final result = widget.items.where(
+  //     (item) {
+  //       if (item is CustomDropdownListFilter) {
+  //         return item.filter(query);
+  //       } else {
+  //         return item.toString().toLowerCase().contains(query.toLowerCase());
+  //       }
+  //     },
+  //   ).toList();
+  //   widget.onSearchedItems(result);
+  // }
 
   void onClear() {
     if (searchCtrl.text.isNotEmpty) {
@@ -125,7 +128,7 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
               searchRequest(val);
             }
           } else if (widget.searchType == _SearchType.onListData) {
-            onSearch(val);
+            widget.onSearch!(val);
           } else {
             widget.onSearchedItems(widget.items);
           }
