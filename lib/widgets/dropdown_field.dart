@@ -113,7 +113,7 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
     super.didUpdateWidget(oldWidget);
     switch (widget.dropdownType) {
       case _DropdownType.singleSelect:
-        selectedItem = widget.selectedItemNotifier.value;
+        // selectedItem = widget.selectedItemNotifier.value;
       case _DropdownType.multipleSelect:
         selectedItems = widget.selectedItemsNotifier.value;
     }

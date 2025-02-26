@@ -636,7 +636,6 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                     switch (widget._dropdownType) {
                       case _DropdownType.singleSelect:
                         selectedItemNotifier.value = value;
-                        break; // Add break to avoid fall-through
                       case _DropdownType.multipleSelect:
                         final currentVal = selectedItemsNotifier.value.toList();
                         if (currentVal.contains(value)) {
@@ -645,9 +644,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                           currentVal.add(value);
                         }
                         selectedItemsNotifier.value = currentVal;
-                        break;
                     }
-                    hideCallback(); // Hide the dropdown when an item is selected
                   },
                   noResultFoundText:
                       widget.noResultFoundText ?? 'No result found.',
