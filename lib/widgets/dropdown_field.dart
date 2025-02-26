@@ -142,9 +142,7 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
             ],
             Expanded(
               child: switch (widget.dropdownType) {
-                _DropdownType.singleSelect => selectedItem != null
-                    ? headerBuilder(context)
-                    : hintBuilder(context),
+                _DropdownType.singleSelect =>  hintBuilder(context),
                 _DropdownType.multipleSelect => selectedItems.isNotEmpty
                     ? headerListBuilder(context)
                     : hintBuilder(context),
