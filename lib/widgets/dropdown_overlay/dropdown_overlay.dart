@@ -405,10 +405,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                     decoration:
                                         decoration?.searchFieldDecoration,
                                     onClearSearch: () {
-                                      if (widget.dropdownType == _DropdownType.singleSelect) {
-                                        setState(() =>
-                                            widget.hideOverlay());
-                                      }
+                                      setState(() =>
+                                          widget.hideOverlay());
                                     },
                                   )
                                 else
@@ -441,10 +439,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                               decoration: decoration
                                                   ?.searchFieldDecoration,
                                               onClearSearch: () {
-                                                if (widget.dropdownType == _DropdownType.singleSelect) {
-                                                  setState(() =>
-                                                  widget.hideOverlay());
-                                                }
+                                                setState(() =>
+                                                    widget.hideOverlay());
                                               },
                                             ),
                                           ),
@@ -479,10 +475,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                     decoration:
                                         decoration?.searchFieldDecoration,
                                     onClearSearch: () {
-                                      if (widget.dropdownType == _DropdownType.singleSelect) {
-                                        setState(() =>
-                                        widget.hideOverlay());
-                                      }                                    },
+                                      setState(() =>
+                                          widget.hideOverlay());                                   },
                                   )
                                 else
                                   GestureDetector(
@@ -527,10 +521,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                               decoration: decoration
                                                   ?.searchFieldDecoration,
                                                   onClearSearch: () {
-                                                    if (widget.dropdownType == _DropdownType.singleSelect) {
-                                                      setState(() =>
-                                                      displayOverly = false);
-                                                    }                                                  },
+                                                    setState(() =>
+                                                        widget.hideOverlay());                                                 },
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??
