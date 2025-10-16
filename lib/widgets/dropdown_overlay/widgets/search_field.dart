@@ -83,10 +83,11 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
   }
 
   void onClear() {
+    widget.onClearSearch?.call();
+
     if (searchCtrl.text.isNotEmpty) {
       searchCtrl.clear();
       widget.onSearchedItems(widget.items);
-      widget.onClearSearch?.call();
     }
   }
 
