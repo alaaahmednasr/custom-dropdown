@@ -10,6 +10,7 @@ class _SearchField<T> extends StatefulWidget {
   final ValueChanged<bool>? onFutureRequestLoading, mayFoundResult;
   final SearchFieldDecoration? decoration;
   final List<T> Function(String query, List<T> items)? customSearchFn;
+  final VoidCallback? onClearSearch;
 
   const _SearchField.forListData({
     super.key,
@@ -18,6 +19,7 @@ class _SearchField<T> extends StatefulWidget {
     required this.customSearchFn,
     required this.searchHintText,
     required this.decoration,
+    required this.onClearSearch,
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
@@ -35,6 +37,7 @@ class _SearchField<T> extends StatefulWidget {
     required this.onFutureRequestLoading,
     required this.mayFoundResult,
     required this.decoration,
+    required this.onClearSearch,
   }) : searchType = _SearchType.onRequestData;
 
   @override
@@ -83,7 +86,7 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
     if (searchCtrl.text.isNotEmpty) {
       searchCtrl.clear();
       widget.onSearchedItems(widget.items);
-      FocusScope.of(context).unfocus();
+      widget.onClearSearch?.call();
     }
   }
 

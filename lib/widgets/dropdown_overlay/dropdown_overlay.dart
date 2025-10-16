@@ -404,6 +404,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                     customSearchFn: widget.customSearchFn,
                                     decoration:
                                         decoration?.searchFieldDecoration,
+                                    onClearSearch: () {
+                                      setState(() => displayOverly = false); // ✅ يغلق الـ dropdown
+                                    },
                                   )
                                 else
                                   GestureDetector(
@@ -434,6 +437,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                               },
                                               decoration: decoration
                                                   ?.searchFieldDecoration,
+                                              onClearSearch: () {
+                                                setState(() => displayOverly = false); // ✅ يغلق الـ dropdown
+                                              },
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??
@@ -466,6 +472,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                         mayFoundSearchRequestResult = val,
                                     decoration:
                                         decoration?.searchFieldDecoration,
+                                    onClearSearch: () {
+                                      setState(() => displayOverly = false); // ✅ يغلق الـ dropdown
+                                    },
                                   )
                                 else
                                   GestureDetector(
@@ -509,6 +518,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                                       val,
                                               decoration: decoration
                                                   ?.searchFieldDecoration,
+                                                  onClearSearch: () {
+                                                    setState(() => displayOverly = false); // ✅ يغلق الـ dropdown
+                                                  },
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??
