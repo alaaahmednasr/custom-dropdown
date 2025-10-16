@@ -83,6 +83,7 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
     if (searchCtrl.text.isNotEmpty) {
       searchCtrl.clear();
       widget.onSearchedItems(widget.items);
+      FocusScope.of(context).unfocus();
     }
   }
 
