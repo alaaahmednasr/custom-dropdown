@@ -210,6 +210,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
       }
     });
 
+    widget.onDropdownOpen?.call();
+
     selectedItem = widget.selectedItemNotifier.value;
     selectedItems = widget.selectedItemsNotifier.value;
 
