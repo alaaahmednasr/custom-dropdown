@@ -93,6 +93,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   late List<T> selectedItems;
   late ScrollController scrollController;
   final key1 = GlobalKey(), key2 = GlobalKey();
+  double availableHeightBelow = 0;
+  double availableHeightAbove = 0;
+
 
   Widget hintBuilder(BuildContext context) {
     return widget.hintBuilder != null
@@ -193,20 +196,38 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     );
   }
 
+
   @override
   void initState() {
     super.initState();
     scrollController = widget.itemsScrollCtrl ?? ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final render1 = key1.currentContext?.findRenderObject() as RenderBox;
-      final render2 = key2.currentContext?.findRenderObject() as RenderBox;
-      final screenHeight = MediaQuery.of(context).size.height;
+      final render1 = key1.currentContext?.findRenderObject() as RenderBox?;
+      final render2 = key2.currentContext?.findRenderObject() as RenderBox?;
+      if (render1 == null || render2 == null) return;
+
+      final media = MediaQuery.of(context);
+      final screenHeight = media.size.height;
+      final keyboardHeight = media.viewInsets.bottom;
+      final statusBarHeight = media.padding.top;
       double y = render1.localToGlobal(Offset.zero).dy;
-      if (screenHeight - y < render2.size.height) {
-        displayOverlayBottom = false;
-        setState(() {});
-      }
+      final overlayHeight = render2.size.height;
+
+      // المساحة المتاحة تحت العنصر (تأخذ في الحسبان الكيبورد و margin بسيط)
+      final below = screenHeight - y - keyboardHeight - 12; // 12 margin outer
+      // المساحة المتاحة فوق العنصر (مأخوذة في الحسبان status bar)
+      final above = y - statusBarHeight - 12;
+
+      availableHeightBelow = below;
+      availableHeightAbove = above;
+
+      // قرر إذا نعرض بالأسفل أو بالأعلى:
+      bool shouldDisplayBelow = below >= overlayHeight || below >= above;
+      displayOverlayBottom = shouldDisplayBelow;
+
+      setState(() {});
     });
+
 
     selectedItem = widget.selectedItemNotifier.value;
     selectedItems = widget.selectedItemsNotifier.value;
@@ -328,18 +349,26 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                       builder: (context) {
                         final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
                         final screenHeight = MediaQuery.of(context).size.height;
-                        final availableHeight = screenHeight - keyboardHeight - 120;
+                        final statusBar = MediaQuery.of(context).padding.top;
+
+// استخدم القيم المحسوبة (fallback لو صفر)
+                        final below = availableHeightBelow > 0 ? availableHeightBelow : (screenHeight - (key1.currentContext?.findRenderObject() as RenderBox?)!.localToGlobal(Offset.zero).dy ?? 0) - keyboardHeight - 12;
+                        final above = availableHeightAbove > 0 ? availableHeightAbove : ((key1.currentContext?.findRenderObject() as RenderBox?)?.localToGlobal(Offset.zero).dy ?? 0) - statusBar - 12;
+
+                        final space = displayOverlayBottom ? below : above;
 
                         final dropdownHeight = items.length > 4
                             ? (widget.overlayHeight ?? (onSearch ? 270.0 : 225.0))
                             : null;
 
-                      return SizedBox(
-                        key: key2,
-                        height: dropdownHeight != null
-                            ? dropdownHeight.clamp(100, availableHeight)
-                            : null,
-                        child: ClipRRect(
+                        final constrainedHeight = dropdownHeight != null
+                            ? dropdownHeight.clamp(100.0, space > 100 ? space : dropdownHeight)
+                            : null;
+
+                        return SizedBox(
+                          key: key2,
+                          height: constrainedHeight,
+                          child: ClipRRect(
                           borderRadius: decoration?.expandedBorderRadius ??
                               _defaultBorderRadius,
                           child:
