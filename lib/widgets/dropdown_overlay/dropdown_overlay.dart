@@ -410,10 +410,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                     decoration:
                                         decoration?.searchFieldDecoration,
                                     onClearSearch: () {
-                                      setState(() {
-                                        selectedItem = null;
-                                        widget.hideOverlay();
-                                      });
+                                      setState(() => widget.hideOverlay());
                                     },
                                   )
                                 else
@@ -449,10 +446,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                               decoration: decoration
                                                   ?.searchFieldDecoration,
                                               onClearSearch: () {
-                                                setState(() {
-                                                  selectedItem = null;
-                                                  widget.hideOverlay();
-                                                });
+                                                setState(
+                                                    () => widget.hideOverlay());
                                               },
                                             ),
                                           ),
@@ -488,10 +483,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                     decoration:
                                         decoration?.searchFieldDecoration,
                                     onClearSearch: () {
-                                      setState(() {
-                                        selectedItem = null;
-                                        widget.hideOverlay();
-                                      });
+                                      setState(() => widget.hideOverlay());
                                     },
                                   )
                                 else
@@ -540,10 +532,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                               decoration: decoration
                                                   ?.searchFieldDecoration,
                                               onClearSearch: () {
-                                                setState(() {
-                                                  selectedItem = null;
-                                                  widget.hideOverlay();
-                                                });
+                                                setState(
+                                                    () => widget.hideOverlay());
                                               },
                                             ),
                                           ),
