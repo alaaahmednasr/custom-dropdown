@@ -1,6 +1,7 @@
 library animated_custom_dropdown;
 
 import 'dart:async';
+import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -182,8 +183,11 @@ class CustomDropdown<T> extends StatefulWidget {
 
   final _DropdownType _dropdownType;
 
+  final VoidCallback? onDropdownOpen;
+
   CustomDropdown({
     super.key,
+    this.onDropdownOpen,
     required this.items,
     required this.onChanged,
     this.controller,
@@ -243,6 +247,7 @@ class CustomDropdown<T> extends StatefulWidget {
     super.key,
     required this.items,
     required this.onChanged,
+    this.onDropdownOpen,
     this.controller,
     this.itemsScrollController,
     this.initialItem,
@@ -298,6 +303,7 @@ class CustomDropdown<T> extends StatefulWidget {
 
   const CustomDropdown.searchRequest({
     super.key,
+    this.onDropdownOpen,
     required this.futureRequest,
     required this.onChanged,
     this.futureRequestDelay,
@@ -346,6 +352,7 @@ class CustomDropdown<T> extends StatefulWidget {
   CustomDropdown.multiSelect({
     super.key,
     required this.items,
+    this.onDropdownOpen,
     required this.onListChanged,
     this.multiSelectController,
     this.controller,
@@ -434,6 +441,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.enabled = true,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
+    this.onDropdownOpen,
   })  : assert(
           initialItems == null || multiSelectController == null,
           'Only one of initialItems or controller can be specified at a time',
@@ -464,6 +472,7 @@ class CustomDropdown<T> extends StatefulWidget {
   const CustomDropdown.multiSelectSearchRequest({
     super.key,
     required this.futureRequest,
+    this.onDropdownOpen,
     required this.onListChanged,
     this.multiSelectController,
     this.futureRequestDelay,
@@ -632,6 +641,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
               overlay: (size, hideCallback) {
                 return _DropdownOverlay<T>(
                   customSearchFn: widget.customSearchFn,
+                  onDropdownOpen: widget.onDropdownOpen,
                   onItemSelect: (T value) {
                     switch (widget._dropdownType) {
                       case _DropdownType.singleSelect:

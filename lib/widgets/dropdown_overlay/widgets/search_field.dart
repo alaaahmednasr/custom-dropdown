@@ -11,6 +11,8 @@ class _SearchField<T> extends StatefulWidget {
   final SearchFieldDecoration? decoration;
   final List<T> Function(String query, List<T> items)? customSearchFn;
   final VoidCallback? onClearSearch;
+  final VoidCallback? onDropdownOpen;
+
 
   const _SearchField.forListData({
     super.key,
@@ -20,6 +22,7 @@ class _SearchField<T> extends StatefulWidget {
     required this.searchHintText,
     required this.decoration,
     required this.onClearSearch,
+    required this.onDropdownOpen,
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
@@ -38,6 +41,7 @@ class _SearchField<T> extends StatefulWidget {
     required this.mayFoundResult,
     required this.decoration,
     required this.onClearSearch,
+    required this.onDropdownOpen,
   }) : searchType = _SearchType.onRequestData;
 
   @override
@@ -57,6 +61,12 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
         widget.items.isEmpty) {
       focusNode.requestFocus();
     }
+
+    focusNode.addListener(() {
+      if (focusNode.hasFocus) {
+        widget.onDropdownOpen?.call(); // <-- دي بتستدعي الكولباك اللي بنمرره من فوق
+      }
+    });
   }
 
   @override
