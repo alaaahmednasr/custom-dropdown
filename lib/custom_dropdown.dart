@@ -624,7 +624,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
               errorStyle: decoration?.errorStyle ?? _defaultErrorStyle,
               errorText: formFieldState.errorText,
               border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 10),
+              contentPadding: EdgeInsets.zero,
             ),
             child: _OverlayBuilder(
               overlayPortalController: widget.overlayController,
