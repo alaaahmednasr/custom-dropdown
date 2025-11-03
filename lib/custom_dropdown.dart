@@ -736,7 +736,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 ),
                 if (formFieldState.hasError)
                   Padding(
-                    padding: const EdgeInsets.only(top: 8.0, left: 10),
+                    padding: const EdgeInsets.only(top: 6, left: 10),
                     child: Text(
                       formFieldState.errorText!,
                       style: decoration?.errorStyle ?? _defaultErrorStyle,
