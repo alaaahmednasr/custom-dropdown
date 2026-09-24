@@ -53,14 +53,16 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
   @override
   void initState() {
     super.initState();
-    if (widget.searchType == _SearchType.onRequestData &&
-        widget.items.isEmpty) {
+    if (widget.decoration?.autoFocus == true ||
+        (widget.searchType == _SearchType.onRequestData &&
+            widget.items.isEmpty)) {
       focusNode.requestFocus();
     }
   }
 
   @override
   void dispose() {
+    focusNode.dispose();
     searchCtrl.dispose();
     _delayTimer?.cancel();
     super.dispose();

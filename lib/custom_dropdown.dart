@@ -1,6 +1,7 @@
 library animated_custom_dropdown;
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -27,6 +28,18 @@ part 'widgets/overlay_builder.dart';
 enum _DropdownType { singleSelect, multipleSelect }
 
 enum _SearchType { onListData, onRequestData }
+
+/// Direction in which [CustomDropdown] overlay should be displayed.
+enum DropdownDirection {
+  /// Automatically calculate direction based on available screen space and keyboard.
+  auto,
+
+  /// Force dropdown overlay to open upwards.
+  top,
+
+  /// Force dropdown overlay to open downwards.
+  bottom,
+}
 
 const _defaultErrorColor = Colors.red;
 
@@ -182,6 +195,11 @@ class CustomDropdown<T> extends StatefulWidget {
 
   final _DropdownType _dropdownType;
 
+  /// Direction in which [CustomDropdown] overlay should be displayed.
+  ///
+  /// Defaults to [DropdownDirection.auto].
+  final DropdownDirection overlayDirection;
+
   CustomDropdown({
     super.key,
     required this.items,
@@ -196,6 +214,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.visibility,
     this.customSearchFn,
     this.overlayController,
+    this.overlayDirection = DropdownDirection.auto,
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
@@ -271,6 +290,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.enabled = true,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
+    this.overlayDirection = DropdownDirection.auto,
   })  : assert(
           initialItem == null || controller == null,
           'Only one of initialItem or controller can be specified at a time',
@@ -310,6 +330,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.visibility,
     this.customSearchFn,
     this.overlayController,
+    this.overlayDirection = DropdownDirection.auto,
     this.searchHintText,
     this.noResultFoundText,
     this.listItemBuilder,
@@ -371,6 +392,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listItemPadding,
     this.enabled = true,
     this.disabledDecoration,
+    this.overlayDirection = DropdownDirection.auto,
   })  : assert(
           initialItems == null || multiSelectController == null,
           'Only one of initialItems or controller can be specified at a time',
@@ -434,6 +456,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.enabled = true,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
+    this.overlayDirection = DropdownDirection.auto,
   })  : assert(
           initialItems == null || multiSelectController == null,
           'Only one of initialItems or controller can be specified at a time',
@@ -496,6 +519,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.enabled = true,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
+    this.overlayDirection = DropdownDirection.auto,
   })  : assert(
           initialItems == null || multiSelectController == null,
           'Only one of initialItems or controller can be specified at a time',
@@ -514,6 +538,7 @@ class CustomDropdown<T> extends StatefulWidget {
 
 class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   final layerLink = LayerLink();
+  final anchorKey = GlobalKey();
   late SingleSelectController<T?> selectedItemNotifier;
   late MultiSelectController<T> selectedItemsNotifier;
   FormFieldState<(T?, List<T>)>? _formFieldState;
@@ -685,10 +710,13 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                       searchRequestLoadingIndicator:
                           widget.searchRequestLoadingIndicator,
                       dropdownType: widget._dropdownType,
+                      overlayDirection: widget.overlayDirection,
+                      anchorKey: anchorKey,
                     );
                   },
                   child: (showCallback) {
                     return CompositedTransformTarget(
+                      key: anchorKey,
                       link: layerLink,
                       child: _DropDownField<T>(
                         onTap: showCallback,
