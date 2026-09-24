@@ -25,6 +25,7 @@ class _DropDownField<T> extends StatefulWidget {
   final _HintBuilder? hintBuilder;
   final _DropdownType dropdownType;
   final bool enabled;
+  final bool alwaysShowHint;
   final MultiSelectController<T> selectedItemsNotifier;
   final bool canClearSelection;
   final VoidCallback? onClear;
@@ -67,6 +68,7 @@ class _DropDownField<T> extends StatefulWidget {
     this.headerPadding,
     this.headerHeight,
     this.enabled = true,
+    this.alwaysShowHint = false,
   });
 
   @override
@@ -236,6 +238,9 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
     // The floating label, when present and resting, doubles as the placeholder,
     // so the in-field hint is suppressed in that case.
     Widget header() {
+      if (widget.alwaysShowHint) {
+        return hintBuilder(context);
+      }
       switch (widget.dropdownType) {
         case _DropdownType.singleSelect:
           if (selectedItem != null) return headerBuilder(context);

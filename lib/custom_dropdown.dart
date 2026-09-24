@@ -259,6 +259,15 @@ class CustomDropdown<T> extends StatefulWidget {
   /// You have to explicitly check for [overlayController] visibility states using [overlayController.isShowing] property.
   final Function(bool)? visibility;
 
+  /// Optional custom filter used by the search constructors instead of
+  /// `toString()` / [CustomDropdownListFilter].
+  final List<T> Function(String query, List<T> items)? customSearchFn;
+
+  /// When `true`, the closed single-select field always renders [hintBuilder]
+  /// / [hintText] instead of the selected item. Useful when the parent supplies
+  /// the displayed value through [hintText].
+  final bool alwaysShowHint;
+
   final _SearchType? _searchType;
 
   final _DropdownType _dropdownType;
@@ -277,6 +286,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.validator,
     this.validateOnChange = true,
     this.visibility,
+    this.customSearchFn,
+    this.alwaysShowHint = false,
     this.overlayController,
     this.listItemBuilder,
     this.headerBuilder,
@@ -344,6 +355,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.label,
     this.decoration,
     this.visibility,
+    this.customSearchFn,
+    this.alwaysShowHint = false,
     this.overlayController,
     this.searchHintText,
     this.noResultFoundText,
@@ -419,6 +432,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.label,
     this.decoration,
     this.visibility,
+    this.customSearchFn,
+    this.alwaysShowHint = false,
     this.overlayController,
     this.searchHintText,
     this.noResultFoundText,
@@ -475,6 +490,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.itemsScrollController,
     this.listValidator,
     this.visibility,
+    this.customSearchFn,
+    this.alwaysShowHint = false,
     this.headerListBuilder,
     this.hintText,
     this.labelText,
@@ -543,6 +560,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.initialItems,
     this.controller,
     this.visibility,
+    this.customSearchFn,
+    this.alwaysShowHint = false,
     this.itemsScrollController,
     this.overlayController,
     this.listValidator,
@@ -622,6 +641,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.itemsScrollController,
     this.overlayController,
     this.visibility,
+    this.customSearchFn,
+    this.alwaysShowHint = false,
     this.hintText,
     this.labelText,
     this.label,
@@ -842,6 +863,9 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
               visibility: _onVisibilityChanged,
               overlay: (size, hideCallback) {
                 return _DropdownOverlay<T>(
+                  customSearchFn: widget.customSearchFn,
+                  closeDropDownOnClearFilterSearch:
+                      widget.closeDropDownOnClearFilterSearch,
                   onItemSelect: (T value) {
                     switch (widget._dropdownType) {
                       case _DropdownType.singleSelect:
@@ -955,6 +979,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                     dropdownType: widget._dropdownType,
                     selectedItemsNotifier: selectedItemsNotifier,
                     enabled: widget.enabled,
+                    alwaysShowHint: widget.alwaysShowHint,
                     canClearSelection: widget.canClearSelection,
                     onClear: _clearSelection,
                     labelText: widget.labelText,

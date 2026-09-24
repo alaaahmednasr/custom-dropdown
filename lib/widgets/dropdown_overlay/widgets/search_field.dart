@@ -17,6 +17,8 @@ class _SearchField<T> extends StatefulWidget {
   final bool paginated;
   final ValueChanged<String>? onPaginatedQuery;
   final bool autofocus;
+  final List<T> Function(String query, List<T> items)? customSearchFn;
+  final VoidCallback? onClearSearch;
 
   const _SearchField.forListData({
     super.key,
@@ -24,6 +26,8 @@ class _SearchField<T> extends StatefulWidget {
     required this.onSearchedItems,
     required this.searchHintText,
     required this.decoration,
+    required this.customSearchFn,
+    this.onClearSearch,
     this.textAlign,
     this.autofocus = false,
   })  : searchType = _SearchType.onListData,
@@ -50,6 +54,8 @@ class _SearchField<T> extends StatefulWidget {
     this.paginated = false,
     this.onPaginatedQuery,
     this.autofocus = false,
+    required this.customSearchFn,
+    this.onClearSearch,
   }) : searchType = _SearchType.onRequestData;
 
   @override
@@ -80,19 +86,25 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
   }
 
   void onSearch(String query) {
-    final result = widget.items.where(
-      (item) {
-        if (item is CustomDropdownListFilter) {
-          return item.filter(query);
-        } else {
-          return item.toString().toLowerCase().contains(query.toLowerCase());
-        }
-      },
-    ).toList();
+    final result = widget.customSearchFn != null
+        ? widget.customSearchFn!(query, widget.items)
+        : widget.items.where(
+            (item) {
+              if (item is CustomDropdownListFilter) {
+                return item.filter(query);
+              } else {
+                return item
+                    .toString()
+                    .toLowerCase()
+                    .contains(query.toLowerCase());
+              }
+            },
+          ).toList();
     widget.onSearchedItems(result);
   }
 
   void onClear() {
+    widget.onClearSearch?.call();
     if (searchCtrl.text.isNotEmpty) {
       searchCtrl.clear();
       if (widget.paginated) {

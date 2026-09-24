@@ -43,6 +43,8 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final _NoResultFoundBuilder? noResultFoundBuilder;
   final CustomDropdownDecoration? decoration;
   final _DropdownType dropdownType;
+  final List<T> Function(String query, List<T> items)? customSearchFn;
+  final bool closeDropDownOnClearFilterSearch;
 
   const _DropdownOverlay({
     Key? key,
@@ -90,6 +92,8 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.listItemBuilder,
     required this.headerListBuilder,
     required this.noResultFoundBuilder,
+    required this.customSearchFn,
+    required this.closeDropDownOnClearFilterSearch,
   });
 
   @override
@@ -113,6 +117,14 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
   bool _hasMore = false;
   bool _loadingMore = false;
   String _query = '';
+
+  VoidCallback? get _onClearSearch => widget.closeDropDownOnClearFilterSearch
+      ? () => setState(() => widget.hideOverlay())
+      : null;
+
+  bool get _searchAutofocus =>
+      widget.autofocusOnSearch ||
+      (widget.decoration?.searchFieldDecoration?.autoFocus ?? false);
 
   Duration get _iconDuration {
     if (!widget.animation.enabled) return Duration.zero;
@@ -625,10 +637,12 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                     onSearchedItems: (val) {
                                       setState(() => items = val);
                                     },
+                                    customSearchFn: widget.customSearchFn,
+                                    onClearSearch: _onClearSearch,
                                     decoration:
                                         decoration?.searchFieldDecoration,
                                     textAlign: widget.textAlign,
-                                    autofocus: widget.autofocusOnSearch,
+                                    autofocus: _searchAutofocus,
                                   )
                                 else
                                   GestureDetector(
@@ -656,11 +670,13 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                               onSearchedItems: (val) {
                                                 setState(() => items = val);
                                               },
+                                              customSearchFn:
+                                                  widget.customSearchFn,
+                                              onClearSearch: _onClearSearch,
                                               decoration: decoration
                                                   ?.searchFieldDecoration,
                                               textAlign: widget.textAlign,
-                                              autofocus:
-                                                  widget.autofocusOnSearch,
+                                              autofocus: _searchAutofocus,
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??
@@ -691,12 +707,14 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                     },
                                     mayFoundResult: (val) =>
                                         mayFoundSearchRequestResult = val,
+                                    customSearchFn: widget.customSearchFn,
+                                    onClearSearch: _onClearSearch,
                                     decoration:
                                         decoration?.searchFieldDecoration,
                                     textAlign: widget.textAlign,
                                     paginated: _isPaginated,
                                     onPaginatedQuery: _loadFirstPage,
-                                    autofocus: widget.autofocusOnSearch,
+                                    autofocus: _searchAutofocus,
                                   )
                                 else
                                   GestureDetector(
@@ -739,13 +757,15 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                               mayFoundResult: (val) =>
                                                   mayFoundSearchRequestResult =
                                                       val,
+                                              customSearchFn:
+                                                  widget.customSearchFn,
+                                              onClearSearch: _onClearSearch,
                                               decoration: decoration
                                                   ?.searchFieldDecoration,
                                               textAlign: widget.textAlign,
                                               paginated: _isPaginated,
                                               onPaginatedQuery: _loadFirstPage,
-                                              autofocus:
-                                                  widget.autofocusOnSearch,
+                                              autofocus: _searchAutofocus,
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??
