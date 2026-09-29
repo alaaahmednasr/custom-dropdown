@@ -11,6 +11,7 @@ class _DropDownField<T> extends StatefulWidget {
   final SingleSelectController<T?> selectedItemNotifier;
   final String hintText;
   final Color? fillColor;
+  final Color? clearSelectionIconColor;
   final BoxBorder? border;
   final BorderRadius? borderRadius;
   final TextAlign? textAlign;
@@ -44,6 +45,7 @@ class _DropDownField<T> extends StatefulWidget {
     required this.dropdownType,
     required this.selectedItemsNotifier,
     this.canClearSelection = false,
+    required this.clearSelectionIconColor,
     this.onClear,
     this.labelText,
     this.label,
@@ -274,7 +276,11 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
             GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: widget.onClear,
-              child: const Icon(Icons.clear_rounded, size: 20),
+              child: Icon(
+                Icons.clear_rounded,
+                size: 20,
+                color: widget.clearSelectionIconColor,
+              ),
             )
           else
             widget.suffixIcon ??

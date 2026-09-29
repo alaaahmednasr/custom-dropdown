@@ -199,7 +199,7 @@ class CustomDropdown<T> extends StatefulWidget {
 
   /// [CustomDropdown] decoration.
   /// Contain sub-decorations [SearchFieldDecoration], [ListItemDecoration] and [ScrollbarThemeData].
-  final CustomDropdownDecoration? decoration;
+  final CustomDropdownDecoration? Function(bool isOpen)? decorationBuilder;
 
   /// Controls how the overlay animates open and closed.
   ///
@@ -274,6 +274,8 @@ class CustomDropdown<T> extends StatefulWidget {
 
   final bool showOverlayHintBuilder;
 
+  final Color? clearSelectionIconColor;
+
 
   CustomDropdown({
     super.key,
@@ -285,7 +287,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hintText,
     this.labelText,
     this.label,
-    this.decoration,
+    this.decorationBuilder,
     this.validator,
     this.validateOnChange = true,
     this.visibility,
@@ -314,6 +316,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.overlayDirection = DropdownOverlayDirection.auto,
     this.disabledDecoration,
     this.showOverlayHintBuilder = false,
+    this.clearSelectionIconColor,
   })  : assert(
           initialItem == null || controller == null,
           'Only one of initialItem or controller can be specified at a time',
@@ -351,13 +354,14 @@ class CustomDropdown<T> extends StatefulWidget {
     super.key,
     required this.items,
     required this.onChanged,
+    this.clearSelectionIconColor,
     this.controller,
     this.itemsScrollController,
     this.initialItem,
     this.hintText,
     this.labelText,
     this.label,
-    this.decoration,
+    this.decorationBuilder,
     this.visibility,
     this.customSearchFn,
     this.alwaysShowHint = false,
@@ -423,6 +427,7 @@ class CustomDropdown<T> extends StatefulWidget {
     super.key,
     this.futureRequest,
     required this.onChanged,
+    this.clearSelectionIconColor,
     this.paginatedRequest,
     this.pageSize = 20,
     this.loadMoreIndicator,
@@ -435,7 +440,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hintText,
     this.labelText,
     this.label,
-    this.decoration,
+    this.decorationBuilder,
     this.visibility,
     this.customSearchFn,
     this.alwaysShowHint = false,
@@ -489,6 +494,7 @@ class CustomDropdown<T> extends StatefulWidget {
     super.key,
     required this.items,
     required this.onListChanged,
+    this.clearSelectionIconColor,
     this.multiSelectController,
     this.controller,
     this.initialItems,
@@ -502,7 +508,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hintText,
     this.labelText,
     this.label,
-    this.decoration,
+    this.decorationBuilder,
     this.validateOnChange = true,
     this.listItemBuilder,
     this.hintBuilder,
@@ -563,6 +569,7 @@ class CustomDropdown<T> extends StatefulWidget {
     super.key,
     required this.items,
     required this.onListChanged,
+    this.clearSelectionIconColor,
     this.multiSelectController,
     this.initialItems,
     this.controller,
@@ -574,7 +581,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listValidator,
     this.listItemBuilder,
     this.hintBuilder,
-    this.decoration,
+    this.decorationBuilder,
     this.headerListBuilder,
     this.noResultFoundText,
     this.noResultFoundBuilder,
@@ -637,6 +644,7 @@ class CustomDropdown<T> extends StatefulWidget {
     super.key,
     this.futureRequest,
     required this.onListChanged,
+    this.clearSelectionIconColor,
     this.paginatedRequest,
     this.pageSize = 20,
     this.loadMoreIndicator,
@@ -654,7 +662,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hintText,
     this.labelText,
     this.label,
-    this.decoration,
+    this.decorationBuilder,
     this.searchHintText,
     this.noResultFoundText,
     this.headerListBuilder,
@@ -825,7 +833,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
     super.build(context); // AutomaticKeepAliveClientMixin
 
     final enabled = widget.enabled;
-    final decoration = widget.decoration;
+    final decoration =widget.decorationBuilder?.call(_overlayOpen);
     final disabledDecoration = widget.disabledDecoration;
     final safeHintText = widget.hintText ?? 'Select value';
 
@@ -945,6 +953,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                   child: _DropDownField<T>(
                     onTap: showCallback,
                     selectedItemNotifier: selectedItemNotifier,
+                    clearSelectionIconColor: widget.clearSelectionIconColor,
                     border: formFieldState.hasError
                         ? (decoration?.closedErrorBorder ??
                             Border.all(
